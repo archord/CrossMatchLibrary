@@ -293,11 +293,13 @@ void Partition::freeZoneArray() {
 
 void Partition::freeStarList(cm_star *starList) {
 
-    cm_star *tStar = starList->next;
-    while (tStar) {
-        starList->next = tStar->next;
-        free(tStar);
-        tStar = starList->next;
+    if (NULL != starList) {
+        cm_star *tStar = starList->next;
+        while (tStar) {
+            starList->next = tStar->next;
+            free(tStar);
+            tStar = starList->next;
+        }
+        free(starList);
     }
-    free(starList);
 }

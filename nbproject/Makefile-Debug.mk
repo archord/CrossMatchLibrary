@@ -37,8 +37,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/src/CrossMatch.o \
 	${OBJECTDIR}/src/Partition.o \
-	${OBJECTDIR}/src/cmutils.o \
-	${OBJECTDIR}/src/example.o
+	${OBJECTDIR}/src/cmutils.o
 
 
 # C Compiler Flags
@@ -79,11 +78,6 @@ ${OBJECTDIR}/src/cmutils.o: src/cmutils.cpp
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/cmutils.o src/cmutils.cpp
-
-${OBJECTDIR}/src/example.o: src/example.cpp 
-	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} $@.d
-	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/example.o src/example.cpp
 
 # Subprojects
 .build-subprojects:

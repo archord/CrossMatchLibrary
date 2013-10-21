@@ -48,7 +48,6 @@ static const float CompareFloat = 0.000001;
 static const long MaxMallocMemory = 2147483648l; //1GB=1073741824l 2GB=2147483648l
 
 float getLineDistance(cm_star *p1, cm_star *p2);
-
 template<typename T>
 inline T getMax(const T& a, const T& b);
 long countFileLines(char *fName);

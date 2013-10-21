@@ -20,16 +20,23 @@ public:
     virtual ~CrossMatch();
 
     cm_star *readStarFile(char *fName, int &starNum);
+    cm_star *copyStarList(cm_star *starlst);
     void match(char *refName, char *objName, float errorBox);
+    void match(cm_star *ref, int refNum, cm_star *obj, float errorBox);
     void compareResult(char *refName, char *objName, char *outName, float errorBox);
     void matchNoPartition(char *refName, char *objName, float errorBox);
     void matchNoPartition(cm_star *ref, cm_star *obj, float errorBox);
     void printMatchedRst(char *outfName, float errorBox);
+    void printMatchedRst(char *outfName, cm_star *starList, float errorBox);
     void printOTStar(char *outfName, float errorBox);
+    void printAllStarList(char *outfName, cm_star *starList, float errorBox);
     void freeStarList(cm_star *starList);
     void freeAllMemory();
     
 private:
+    
+    int refNum;
+    int objNum;
     cm_star *refStarList;
     cm_star *objStarList;
     cm_star *refStarListNoPtn;

@@ -143,6 +143,7 @@ cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
 
     if (fgets(line, MaxStringLength, fp) != NULL) {
         nextStar = (cm_star *) malloc(sizeof (cm_star));
+        nextStar->id = starNum;
         nextStar->next = NULL;
         sscanf(line, "%f%f%f", &nextStar->pixx, &nextStar->pixy, &nextStar->mag);
         starList = nextStar;
@@ -152,6 +153,7 @@ cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
 
     while (fgets(line, MaxStringLength, fp) != NULL) {
         nextStar = (cm_star *) malloc(sizeof (cm_star));
+        nextStar->id = starNum;
         nextStar->next = NULL;
         sscanf(line, "%f%f%f", &nextStar->pixx, &nextStar->pixy, &nextStar->mag);
         tStar->next = nextStar;
@@ -269,7 +271,7 @@ void CrossMatch::printMatchedRst(char *outfName, float errorBox) {
     while (NULL != tStar) {
         if (NULL != tStar->match && tStar->error < errorBox) { 
             fprintf(fp, "%8d %12f %12f %8d %12f %12f %12f\n",
-                    tStar->id, tStar->pixx, tStar->pixy, tStar->match->id, 
+                    tStar->starId, tStar->pixx, tStar->pixy, tStar->match->starId, 
                     tStar->match->pixx, tStar->match->pixy, tStar->error);
             count++;
         }
@@ -292,7 +294,7 @@ void CrossMatch::printOTStar(char *outfName, float errorBox) {
     while (NULL != tStar) {
         if (NULL == tStar->match) { 
             fprintf(fp, "%8d %12f %12f\n",
-                    tStar->id, tStar->pixx, tStar->pixy);
+                    tStar->starId, tStar->pixx, tStar->pixy);
             count++;
         }
         tStar = tStar->next;

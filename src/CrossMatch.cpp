@@ -41,7 +41,7 @@ void CrossMatch::match(char *refName, char *objName, float errorBox) {
   zones->partitonStarField(refStarList, refNum);
   refStarList = NULL;
 
-  cm_star *nextStar = objStarList;
+  CMStar *nextStar = objStarList;
   while (nextStar) {
     zones->getMatchStar(nextStar);
     nextStar = nextStar->next;
@@ -52,7 +52,7 @@ void CrossMatch::match(char *refName, char *objName, float errorBox) {
 #endif
 }
 
-void CrossMatch::match(cm_star *ref, int refNum, cm_star *obj, float errorBox) {
+void CrossMatch::match(CMStar *ref, int refNum, CMStar *obj, float errorBox) {
 
   float minZoneLen = errorBox * TimesOfErrorRadius;
   float searchRds = errorBox;
@@ -61,7 +61,7 @@ void CrossMatch::match(cm_star *ref, int refNum, cm_star *obj, float errorBox) {
   zones->partitonStarField(ref, refNum);
   ref = NULL;
 
-  cm_star *nextStar = obj;
+  CMStar *nextStar = obj;
   while (nextStar) {
     zones->getMatchStar(nextStar);
     nextStar = nextStar->next;
@@ -85,14 +85,14 @@ void CrossMatch::matchNoPartition(char *refName, char *objName, float errorBox) 
   refStarListNoPtn = readStarFile(refName, refNum);
   objStarListNoPtn = readStarFile(objName, objNum);
 
-  cm_star *tObj = objStarListNoPtn;
+  CMStar *tObj = objStarListNoPtn;
 
   while (tObj) {
     float tError = 0.0;
     float minError = getLineDistance(refStarListNoPtn, tObj);
     tObj->match = refStarListNoPtn;
     tObj->error = minError;
-    cm_star *tRef = refStarListNoPtn->next;
+    CMStar *tRef = refStarListNoPtn->next;
     while (tRef) {
       tError = getLineDistance(tRef, tObj);
       if (tError < minError) {
@@ -118,16 +118,16 @@ void CrossMatch::matchNoPartition(char *refName, char *objName, float errorBox) 
  * @param ref
  * @param obj
  */
-void CrossMatch::matchNoPartition(cm_star *ref, cm_star *obj, float errorBox) {
+void CrossMatch::matchNoPartition(CMStar *ref, CMStar *obj, float errorBox) {
 
-  cm_star *tObj = obj;
+  CMStar *tObj = obj;
 
   while (tObj) {
     float tError = 0.0;
     float minError = getLineDistance(ref, tObj);
     tObj->match = refStarListNoPtn;
     tObj->error = minError;
-    cm_star *tRef = ref->next;
+    CMStar *tRef = ref->next;
     while (tRef) {
       tError = getLineDistance(tRef, tObj);
       if (tError < minError) {
@@ -147,7 +147,7 @@ void CrossMatch::matchNoPartition(cm_star *ref, cm_star *obj, float errorBox) {
  * @param starNum
  * @return 
  */
-cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
+CMStar *CrossMatch::readStarFile(char *fName, int &starNum) {
 
   FILE *fp = fopen(fName, "r");
   if (fp == NULL) {
@@ -155,14 +155,14 @@ cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
   }
 
   starNum = 0;
-  cm_star *starList = NULL;
-  cm_star *tStar = NULL;
-  cm_star *nextStar = NULL;
+  CMStar *starList = NULL;
+  CMStar *tStar = NULL;
+  CMStar *nextStar = NULL;
   char line[MaxStringLength];
 
   while (fgets(line, MaxStringLength, fp) != NULL) {
     if (3 == sscanf(line, "%f%f%f", &nextStar->pixx, &nextStar->pixy, &nextStar->mag)) {
-      nextStar = (cm_star *) malloc(sizeof (cm_star));
+      nextStar = (CMStar *) malloc(sizeof (CMStar));
       nextStar->id = starNum;
       nextStar->next = NULL;
       if (NULL == starList) {
@@ -182,32 +182,32 @@ cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
   return starList;
 }
 
-cm_star *CrossMatch::copyStarList(cm_star *starlst) {
+CMStar *CrossMatch::copyStarList(CMStar *starlst) {
 
-  cm_star *tHead = NULL;
-  cm_star *tStar = NULL;
-  cm_star *origlst = starlst;
+  CMStar *tHead = NULL;
+  CMStar *tStar = NULL;
+  CMStar *origlst = starlst;
 
   if (NULL != origlst) {
-    tHead = (cm_star *) malloc(sizeof (cm_star));
-    memcpy(tHead, origlst, sizeof (cm_star));
+    tHead = (CMStar *) malloc(sizeof (CMStar));
+    memcpy(tHead, origlst, sizeof (CMStar));
     origlst = origlst->next;
     tStar = tHead;
   }
 
   while (NULL != origlst) {
-    tStar->next = (cm_star *) malloc(sizeof (cm_star));
-    memcpy(tStar->next, origlst, sizeof (cm_star));
+    tStar->next = (CMStar *) malloc(sizeof (CMStar));
+    memcpy(tStar->next, origlst, sizeof (CMStar));
     origlst = origlst->next;
     tStar = tStar->next;
   }
   return tHead;
 }
 
-void CrossMatch::freeStarList(cm_star *starList) {
+void CrossMatch::freeStarList(CMStar *starList) {
 
   if (NULL != starList) {
-    cm_star *tStar = starList->next;
+    CMStar *tStar = starList->next;
     while (tStar) {
       starList->next = tStar->next;
       free(tStar);
@@ -235,8 +235,8 @@ void CrossMatch::compareResult(char *refName, char *objName, char *outfName, flo
 
   FILE *fp = fopen(outfName, "w");
 
-  cm_star *tStar1 = objStarList;
-  cm_star *tStar2 = objStarListNoPtn;
+  CMStar *tStar1 = objStarList;
+  CMStar *tStar2 = objStarListNoPtn;
   int i = 0, j = 0, k = 0, m = 0, n = 0, g = 0;
   while (NULL != tStar1 && NULL != tStar2) {
     if (NULL != tStar1->match && NULL != tStar2->match) {
@@ -307,7 +307,7 @@ void CrossMatch::printMatchedRst(char *outfName, float errorBox) {
   fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
 
   long count = 0;
-  cm_star *tStar = objStarList;
+  CMStar *tStar = objStarList;
   while (NULL != tStar) {
     if (NULL != tStar->match && tStar->error < errorBox) {
       fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
@@ -324,13 +324,13 @@ void CrossMatch::printMatchedRst(char *outfName, float errorBox) {
 #endif
 }
 
-void CrossMatch::printMatchedRst(char *outfName, cm_star *starList, float errorBox) {
+void CrossMatch::printMatchedRst(char *outfName, CMStar *starList, float errorBox) {
 
   FILE *fp = fopen(outfName, "w");
   fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
 
   long count = 0;
-  cm_star *tStar = starList;
+  CMStar *tStar = starList;
   while (NULL != tStar) {
     if (NULL != tStar->match && tStar->error < errorBox) {
       fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
@@ -347,13 +347,13 @@ void CrossMatch::printMatchedRst(char *outfName, cm_star *starList, float errorB
 #endif
 }
 
-void CrossMatch::printAllStarList(char *outfName, cm_star *starList, float errorBox) {
+void CrossMatch::printAllStarList(char *outfName, CMStar *starList, float errorBox) {
 
   FILE *fp = fopen(outfName, "w");
   fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
 
   long count = 0;
-  cm_star *tStar = starList;
+  CMStar *tStar = starList;
   while (NULL != tStar) {
     if (NULL != tStar->match) {
       fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
@@ -379,7 +379,7 @@ void CrossMatch::printOTStar(char *outfName, float errorBox) {
   fprintf(fp, "Id\tX\tY\n");
 
   long count = 0;
-  cm_star *tStar = objStarList;
+  CMStar *tStar = objStarList;
   while (NULL != tStar) {
     if (NULL == tStar->match) {
       fprintf(fp, "%8ld %12f %12f\n",

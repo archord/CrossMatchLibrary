@@ -28,7 +28,7 @@ Partition::~Partition() {
     freeZoneArray();
 }
 
-void Partition::partitonStarField(cm_star *starList, int starNum) {
+void Partition::partitonStarField(CMStar *starList, int starNum) {
 
     totalStar = starNum;
 
@@ -43,15 +43,15 @@ void Partition::partitonStarField(cm_star *starList, int starNum) {
     zoneYnum = ceil(fieldHeight * zoneIntervalRecp);
 
     totalZone = zoneXnum*zoneYnum;
-    zoneArray = (cm_zone *) malloc(sizeof (cm_zone) * totalZone);
+    zoneArray = (CMZone *) malloc(sizeof (CMZone) * totalZone);
 
     for (int i = 0; i < totalZone; i++) {
         zoneArray[i].star = NULL;
         zoneArray[i].starNum = 0;
     }
 
-    cm_star *listHead = starList;
-    cm_star *tmp = listHead;
+    CMStar *listHead = starList;
+    CMStar *tmp = listHead;
     int tNum = 0;
     while (tmp) {
         listHead = tmp->next; //把tmp点从数据表中移除
@@ -74,17 +74,17 @@ void Partition::partitonStarField(cm_star *starList, int starNum) {
  * @return the matched star is stored on objStar->match, 
  *         the distance between two stars is stored on objStar->error
  */
-void Partition::getMatchStar(cm_star *objStar) {
+void Partition::getMatchStar(CMStar *objStar) {
 
     long sZoneNum = 0;
     long *searchZonesIdx = getStarSearchZone(objStar, sZoneNum);
 
     float minError = errRadius;
-    cm_star *minPoint = NULL;
+    CMStar *minPoint = NULL;
 
     int i;
     for (i = 0; i < sZoneNum; i++) {
-        cm_star *tmpPoint = searchSimilarStar(searchZonesIdx[i], objStar);
+        CMStar *tmpPoint = searchSimilarStar(searchZonesIdx[i], objStar);
         if (tmpPoint != NULL && objStar->error < minError) {
             minError = objStar->error;
             minPoint = tmpPoint;
@@ -106,12 +106,12 @@ void Partition::getMatchStar(cm_star *objStar) {
  * @param objStar
  * @return matched star, the distance between two stars is stored on objStar->error
  */
-cm_star *Partition::searchSimilarStar(long zoneIdx, cm_star *objStar) {
+CMStar *Partition::searchSimilarStar(long zoneIdx, CMStar *objStar) {
 
     float error = errRadius;
-    cm_star *goalStar = NULL;
+    CMStar *goalStar = NULL;
 
-    cm_star *nextStar = zoneArray[zoneIdx].star;
+    CMStar *nextStar = zoneArray[zoneIdx].star;
     while (nextStar) {
         float distance = getLineDistance(nextStar, objStar);
         if (distance < error) {
@@ -125,7 +125,7 @@ cm_star *Partition::searchSimilarStar(long zoneIdx, cm_star *objStar) {
     return goalStar;
 }
 
-long Partition::getZoneIndex(cm_star * star) {
+long Partition::getZoneIndex(CMStar * star) {
 
     long x = (long) ((star->pixx - minx) * zoneIntervalRecp);
     long y = (long) ((star->pixy - miny) * zoneIntervalRecp);
@@ -133,9 +133,9 @@ long Partition::getZoneIndex(cm_star * star) {
     return y * zoneXnum + x;
 }
 
-void Partition::addStarToZone(cm_star *star, long zoneIdx) {
+void Partition::addStarToZone(CMStar *star, long zoneIdx) {
 
-    cm_zone *zone = &zoneArray[zoneIdx];
+    CMZone *zone = &zoneArray[zoneIdx];
     if (NULL == zone->star) {
         zone->star = star;
         star->next = NULL;
@@ -146,14 +146,14 @@ void Partition::addStarToZone(cm_star *star, long zoneIdx) {
     zone->starNum = zone->starNum + 1;
 }
 
-void Partition::getMinMaxXY(cm_star *starList) {
+void Partition::getMinMaxXY(CMStar *starList) {
 
     minx = starList->pixx;
     maxx = starList->pixx;
     miny = starList->pixy;
     maxy = starList->pixy;
 
-    cm_star *nextStar = starList->next;
+    CMStar *nextStar = starList->next;
     while (nextStar) {
         if (nextStar->pixx > maxx) {
             maxx = nextStar->pixx;
@@ -172,7 +172,7 @@ void Partition::getMinMaxXY(cm_star *starList) {
     fieldHeight = maxy - miny;
 }
 
-long *Partition::getStarSearchZone(cm_star *star, long &sZoneNum) {
+long *Partition::getStarSearchZone(CMStar *star, long &sZoneNum) {
 
     float x = star->pixx - minx;
     float y = star->pixy - miny;
@@ -270,7 +270,7 @@ void Partition::printZoneDetail(char *fName) {
         if (zoneArray[i].starNum > 0) {
             j++;
             fprintf(fp, "%8d%5d%5d%8d", i + 1, i % zoneXnum, i / zoneXnum, zoneArray[i].starNum);
-            cm_star *tmp = zoneArray[i].star;
+            CMStar *tmp = zoneArray[i].star;
             while (tmp) {
                 fprintf(fp, "%15.8f", tmp->pixx);
                 tmp = tmp->next;
@@ -291,10 +291,10 @@ void Partition::freeZoneArray() {
     }
 }
 
-void Partition::freeStarList(cm_star *starList) {
+void Partition::freeStarList(CMStar *starList) {
 
     if (NULL != starList) {
-        cm_star *tStar = starList->next;
+        CMStar *tStar = starList->next;
         while (tStar) {
             starList->next = tStar->next;
             free(tStar);

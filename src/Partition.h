@@ -29,7 +29,7 @@ private:
     int zoneYnum;               //分区在Y方向上的个数
     int totalZone;              //分区的总个数
     int totalStar;              //星的总数
-    cm_zone *zoneArray;         //分区数组
+    CMZone *zoneArray;         //分区数组
 
 public:
     Partition();
@@ -37,8 +37,8 @@ public:
     Partition(float errBox, float minZoneLen, float searchRds);
     virtual ~Partition();
 
-    void partitonStarField(cm_star *starList, int starNum);
-    void getMatchStar(cm_star *objStar);
+    void partitonStarField(CMStar *starList, int starNum);
+    void getMatchStar(CMStar *objStar);
     void printZoneDetail(char *fName);
     void freeZoneArray();
     
@@ -50,12 +50,12 @@ public:
     float getMinZoneLength() const;
 
 private:
-    cm_star *searchSimilarStar(long zoneIdx, cm_star *star);
-    long *getStarSearchZone(cm_star *star, long &sZoneNum);
-    long getZoneIndex(cm_star * star);
-    void getMinMaxXY(cm_star *starList);
-    void addStarToZone(cm_star *star, long zoneIdx);
-    void freeStarList(cm_star *starList);
+    CMStar *searchSimilarStar(long zoneIdx, CMStar *star);
+    long *getStarSearchZone(CMStar *star, long &sZoneNum);
+    long getZoneIndex(CMStar * star);
+    void getMinMaxXY(CMStar *starList);
+    void addStarToZone(CMStar *star, long zoneIdx);
+    void freeStarList(CMStar *starList);
 };
 
 #endif	/* PARTITION_H */

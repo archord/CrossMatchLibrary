@@ -155,15 +155,19 @@ cm_star *CrossMatch::readStarFile(char *fName, int &starNum) {
   }
 
   starNum = 0;
+  float tx=0, ty=0, tmag=0;
   cm_star *starList = NULL;
   cm_star *tStar = NULL;
   cm_star *nextStar = NULL;
   char line[MaxStringLength];
 
   while (fgets(line, MaxStringLength, fp) != NULL) {
-    if (3 == sscanf(line, "%f%f%f", &nextStar->pixx, &nextStar->pixy, &nextStar->mag)) {
+    if (3 == sscanf(line, "%f%f%f", &tx, &ty, &tmag)) {
       nextStar = (cm_star *) malloc(sizeof (cm_star));
       nextStar->id = starNum;
+      nextStar->pixx = tx;
+      nextStar->pixy = ty;
+      nextStar->mag = tmag;
       nextStar->next = NULL;
       if (NULL == starList) {
         starList = nextStar;

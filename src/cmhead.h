@@ -24,7 +24,7 @@ class CMZone {
 public:
     int starNum;
     CMStar *star;
-} CMZone;
+};
 
 #define FIND_MOST_LOW
 #define PRINT_CM_DETAIL1

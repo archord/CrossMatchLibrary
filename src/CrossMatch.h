@@ -33,7 +33,7 @@ public:
     void freeStarList(CMStar *starList);
     void freeAllMemory();
     
-private:
+protected:
     
     int refNum;
     int objNum;

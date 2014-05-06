@@ -11,7 +11,7 @@
 #include "cmhead.h"
 
 class Partition {
-private:
+protected:
     float maxx;
     float maxy;
     float minx;
@@ -49,7 +49,7 @@ public:
     void setMinZoneLength(float minZoneLength);
     float getMinZoneLength() const;
 
-private:
+protected:
     CMStar *searchSimilarStar(long zoneIdx, CMStar *star);
     long *getStarSearchZone(CMStar *star, long &sZoneNum);
     long getZoneIndex(CMStar * star);

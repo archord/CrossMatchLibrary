@@ -21,12 +21,58 @@ CrossMatch::CrossMatch() {
   refStarListNoPtn = NULL;
   objStarListNoPtn = NULL;
   zones = NULL;
+  sphereZones = NULL;
 }
 
 CrossMatch::CrossMatch(const CrossMatch& orig) {
 }
 
 CrossMatch::~CrossMatch() {
+}
+
+void CrossMatch::matchSphere(char *refName, char *ref2Name, char *objName, float errorBox, float errorBox2) {
+
+  errorBox = errorBox / 3600.0;
+  errorBox2 = errorBox2 / 3600.0;
+
+  float minZoneLen = errorBox * TimesOfErrorRadius;
+  float searchRds = errorBox;
+  float minZoneLen2 = errorBox2 * TimesOfErrorRadius;
+  float searchRds2 = errorBox2;
+
+  refStarList = readStarFileSphere(refName, refNum);
+  refStarList2 = readStarFileSphere(ref2Name, refNum);
+  objStarList = readStarFileSphere(objName, objNum);
+
+  sphereZones = new PartitionSphere(errorBox, minZoneLen, searchRds);
+  sphereZones->initAreaNode(refStarList);
+  sphereZones->addDataToTree(refStarList);
+  refStarList = NULL;
+
+  int i = 0;
+  CMStar *nextStar = objStarList;
+  while (nextStar) {
+    sphereZones->getMatchStar(nextStar);
+    nextStar = nextStar->next;
+    i++;
+  }
+  //  printf("i=%d\n", i);
+  sphereZones2 = new PartitionSphere(errorBox2, minZoneLen2, searchRds2);
+  sphereZones2->initAreaNode(refStarList2);
+  sphereZones2->addDataToTree(refStarList2);
+  refStarList2 = NULL;
+  nextStar = objStarList;
+  i = 0;
+  while (nextStar) {
+    i++;
+    sphereZones2->getMatchStar2(nextStar);
+    nextStar = nextStar->next;
+  }
+  //  printf("i=%d\n", i);
+
+#ifdef PRINT_CM_DETAIL
+  printf("partition match done!\n");
+#endif
 }
 
 void CrossMatch::match(char *refName, char *objName, float errorBox) {
@@ -112,6 +158,39 @@ void CrossMatch::matchNoPartition(char *refName, char *objName, float errorBox) 
 #endif
 }
 
+void CrossMatch::matchNoPartition2(char *refName, char *objName, float errorBox) {
+
+  int refNum, objNum;
+  refStarListNoPtn = readStarFile(refName, refNum);
+  objStarListNoPtn = readStarFile(objName, objNum);
+
+  CMStar *tObj = objStarListNoPtn;
+
+  while (tObj) {
+    float tError = 0.0;
+    float minError = getGreatCircleDistance(refStarListNoPtn, tObj);
+    tObj->match = refStarListNoPtn;
+    tObj->error = minError;
+    CMStar *tRef = refStarListNoPtn->next;
+    while (tRef) {
+      tError = getLineDistance(tRef, tObj);
+      if (tError < minError) {
+        minError = tError;
+        tObj->match = tRef;
+        tObj->error = tError;
+      }
+      tRef = tRef->next;
+    }
+    tObj = tObj->next;
+  }
+
+  //freeStarList(refStarListNoPtn);
+  //freeStarList(objStarListNoPtn);
+#ifdef PRINT_CM_DETAIL
+  printf("no partition match done!\n");
+#endif
+}
+
 /**
  * the matched star is stored on obj->match, 
  * the distance between two stars is stored on obj->error
@@ -160,11 +239,60 @@ CMStar *CrossMatch::readStarFile(char *fName, int &starNum) {
   CMStar *nextStar = NULL;
   char line[MaxStringLength];
 
+  float x, y, mag;
+
   while (fgets(line, MaxStringLength, fp) != NULL) {
-    if (3 == sscanf(line, "%f%f%f", &nextStar->pixx, &nextStar->pixy, &nextStar->mag)) {
+    if (3 == sscanf(line, "%f%f%f%*s", &x, &y, &mag)) {
       nextStar = (CMStar *) malloc(sizeof (CMStar));
       nextStar->id = starNum;
+      nextStar->pixx = x;
+      nextStar->pixy = y;
+      nextStar->mag = mag;
+      nextStar->line = (char *) malloc(MaxStringLength);
+      strcpy(nextStar->line, line);
       nextStar->next = NULL;
+      if (NULL == starList) {
+        starList = nextStar;
+        tStar = nextStar;
+      } else {
+        tStar->next = nextStar;
+        tStar = nextStar;
+      }
+      starNum++;
+    }
+  }
+
+#ifdef PRINT_CM_DETAIL
+  printf("%s\t%d stars\n", fName, starNum);
+#endif
+  return starList;
+}
+
+CMStar *CrossMatch::readStarFileSphere(char *fName, int &starNum) {
+
+  FILE *fp = fopen(fName, "r");
+  if (fp == NULL) {
+    return NULL;
+  }
+
+  starNum = 0;
+  CMStar *starList = NULL;
+  CMStar *tStar = NULL;
+  CMStar *nextStar = NULL;
+  char line[MaxStringLength];
+  float ra, dec;
+
+  while (fgets(line, MaxStringLength, fp) != NULL) {
+    if (2 == sscanf(line, "%f%f*s", &ra, &dec)) {
+      nextStar = (CMStar *) malloc(sizeof (CMStar));
+      nextStar->id = starNum;
+      nextStar->alpha = ra;
+      nextStar->delta = dec;
+      nextStar->line = (char *) malloc(MaxStringLength);
+      strcpy(nextStar->line, line);
+      nextStar->matchNum = 0;
+      nextStar->next = NULL;
+      nextStar->match = NULL;
       if (NULL == starList) {
         starList = nextStar;
         tStar = nextStar;
@@ -210,6 +338,7 @@ void CrossMatch::freeStarList(CMStar *starList) {
     CMStar *tStar = starList->next;
     while (tStar) {
       starList->next = tStar->next;
+      free(tStar->line);
       free(tStar);
       tStar = starList->next;
     }
@@ -324,6 +453,29 @@ void CrossMatch::printMatchedRst(char *outfName, float errorBox) {
 #endif
 }
 
+void CrossMatch::printMatchedRstSphere(char *outfName, float errorBox) {
+
+  FILE *fp = fopen(outfName, "w");
+  fprintf(fp, "Id\tra\tdec\tmId\tmra\tmdec\tdistance\n");
+
+  long count = 0;
+  CMStar *tStar = objStarList;
+  while (NULL != tStar) {
+    if (NULL != tStar->match && tStar->error < errorBox) {
+      fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
+              tStar->starId, tStar->alpha, tStar->delta, tStar->match->starId,
+              tStar->match->alpha, tStar->match->delta, tStar->error);
+      count++;
+    }
+    tStar = tStar->next;
+  }
+  fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+  printf("matched stars %d\n", count);
+#endif
+}
+
 void CrossMatch::printMatchedRst(char *outfName, CMStar *starList, float errorBox) {
 
   FILE *fp = fopen(outfName, "w");
@@ -393,4 +545,63 @@ void CrossMatch::printOTStar(char *outfName, float errorBox) {
 #ifdef PRINT_CM_DETAIL
   printf("OT stars %d\n", count);
 #endif
+}
+
+void CrossMatch::printOTStarSphere(char *outfName, float errorBox) {
+
+  FILE *fp = fopen(outfName, "w");
+  fprintf(fp, "Id\tra\tdec\tmId\tmra\tmdec\tdistance\n");
+
+  long count = 0;
+  CMStar *tStar = objStarList;
+  while (NULL != tStar) {
+    if (NULL == tStar->match || tStar->error > errorBox) {
+      fprintf(fp, "%8ld %12f %12f ",
+              tStar->starId, tStar->alpha, tStar->delta);
+      if (NULL != tStar->match) {
+        fprintf(fp, "%8ld %12f %12f %12f",
+                tStar->match->starId, tStar->match->alpha, tStar->match->delta, tStar->error);
+      }
+      fprintf(fp, "\n");
+      count++;
+    }
+    tStar = tStar->next;
+  }
+  fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+  printf("OT stars %d\n", count);
+#endif
+}
+
+void CrossMatch::printOTStarSphere2(char *outfName, float errorBox) {
+
+  FILE *fp = fopen(outfName, "w");
+
+  long count = 0;
+  CMStar *tStar = objStarList;
+  int t0 = 0, t1 = 0, t2 = 0;
+  while (NULL != tStar) {
+    if (tStar->matchNum < 1) {
+      printf("%5d %s", tStar->id, tStar->line);
+      t0++;
+    } else if (tStar->matchNum == 1) {
+      t1++;
+    } else {
+      t2++;
+    }
+    if (NULL == tStar->match && tStar->matchNum <= 1) {
+      fprintf(fp, "%s", tStar->line);
+      count++;
+    }
+    tStar = tStar->next;
+  }
+  fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+  //  printf("t0=%d\n", t0);
+  //  printf("t1=%d\n", t1);
+  //  printf("t2=%d\n", t2);
+#endif
+  printf("OT stars %d\n", count);
 }

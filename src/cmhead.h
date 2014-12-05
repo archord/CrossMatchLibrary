@@ -38,6 +38,7 @@ public:
     float delta;
     float mag;
     float error;
+    int matchNum;
     char *line;
     CMStar *match;
     CMStar *next;

@@ -25,9 +25,9 @@ int main(int argc, char **argv) {
   float errorBox2 = atof(argv[6]);
 
   CrossMatch *cm = new CrossMatch();
-  cm->matchSphere(refName, ref2Name, objName, errorBox1, errorBox2);
+//  cm->matchSphere(refName, ref2Name, objName, errorBox1, errorBox2);
 //  cm->printMatchedRstSphere(matchedName, errorBox1);
-  cm->printOTStarSphere2(otName, errorBox1);
+//  cm->printOTStarSphere2(otName, errorBox1);
   cm->freeAllMemory();
   return 0;
 }

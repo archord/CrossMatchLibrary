@@ -21,8 +21,8 @@ FC=gfortran
 AS=as
 
 # Macros
-CND_PLATFORM=GNU-Linux-x86
-CND_DLIB_EXT=so
+CND_PLATFORM=MinGW-Windows
+CND_DLIB_EXT=dll
 CND_CONF=Release
 CND_DISTDIR=dist
 CND_BUILDDIR=build
@@ -37,7 +37,9 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/src/CrossMatch.o \
 	${OBJECTDIR}/src/Partition.o \
-	${OBJECTDIR}/src/cmutils.o
+	${OBJECTDIR}/src/PartitionSphere.o \
+	${OBJECTDIR}/src/cmutils.o \
+	${OBJECTDIR}/src/example.o
 
 
 # C Compiler Flags
@@ -62,22 +64,32 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libCrossMatchLibrary.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libCrossMatchLibrary.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libCrossMatchLibrary.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared
 
 ${OBJECTDIR}/src/CrossMatch.o: src/CrossMatch.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/CrossMatch.o src/CrossMatch.cpp
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/CrossMatch.o src/CrossMatch.cpp
 
 ${OBJECTDIR}/src/Partition.o: src/Partition.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Partition.o src/Partition.cpp
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/Partition.o src/Partition.cpp
+
+${OBJECTDIR}/src/PartitionSphere.o: src/PartitionSphere.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/PartitionSphere.o src/PartitionSphere.cpp
 
 ${OBJECTDIR}/src/cmutils.o: src/cmutils.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/cmutils.o src/cmutils.cpp
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/cmutils.o src/cmutils.cpp
+
+${OBJECTDIR}/src/example.o: src/example.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} "$@.d"
+	$(COMPILE.cc) -O2  -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/src/example.o src/example.cpp
 
 # Subprojects
 .build-subprojects:

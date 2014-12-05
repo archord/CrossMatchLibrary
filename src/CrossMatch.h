@@ -10,6 +10,7 @@
 
 #include "StarFile.h"
 #include "Partition.h"
+#include "PartitionSphere.h"
 
 class CrossMatch {
 public:

@@ -13,6 +13,15 @@ float getLineDistance(CMStar *p1, CMStar *p2) {
   return dist;
 }
 
+double getGreatCircleDistance(CMStar *p1, CMStar *p2) {
+  double rst = 0.0;
+  if (fabs(p1->delta - p2->delta) > CompareFloat || fabs(p1->delta - p2->delta) > CompareFloat) {
+    rst = RAD_TO_ANG * acos(sin(ANG_TO_RAD * (p1->delta)) * sin(ANG_TO_RAD * (p2->delta)) +
+            cos(ANG_TO_RAD * (p1->delta)) * cos(ANG_TO_RAD * (p2->delta)) * cos(ANG_TO_RAD * (fabs(p1->alpha - p2->alpha))));
+  }
+  return rst;
+}
+
 /**
  * judge a string is a blank string, only contain ' ', '\t','\n','\r',eg
  * @param str
@@ -23,7 +32,7 @@ bool isEmpty(char *str, int len) {
 
   if (NULL != str && '\0' != str[0]) {
     for (int i = 0; i < len && '\0' != str[i]; i++) {
-      if (str[i] != ' ' && str[i] != '\t' && str[i] != '\r' && 
+      if (str[i] != ' ' && str[i] != '\t' && str[i] != '\r' &&
               str[i] != '\n' && str[i] != '\x0b') {
         return false;
       }
@@ -39,10 +48,10 @@ bool isEmpty(char *str, int len) {
  * @return 
  */
 bool hasNumber(char *str, int len) {
-  
+
   if (NULL != str && '\0' != str[0]) {
     for (int i = 0; i < len && '\0' != str[i]; i++) {
-      if (str[i] >='0' && str[i] <= '9') {
+      if (str[i] >= '0' && str[i] <= '9') {
         return true;
       }
     }

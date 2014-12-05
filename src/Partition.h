@@ -9,6 +9,7 @@
 #define	PARTITION_H
 
 #include "cmhead.h"
+#include "StarFile.h"
 
 class Partition {
 protected:
@@ -37,7 +38,7 @@ public:
     Partition(float errBox, float minZoneLen, float searchRds);
     virtual ~Partition();
 
-    void partitonStarField(CMStar *starList, int starNum);
+    void partitonStarField(StarFile *starFile) ;
     void getMatchStar(CMStar *objStar);
     void printZoneDetail(char *fName);
     void freeZoneArray();

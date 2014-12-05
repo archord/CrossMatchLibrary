@@ -22,3 +22,16 @@ void testCrossMatch() {
     cm->freeAllMemory();
 
 }
+
+void partitionAndNoPartitionCompare() {
+    
+    char *refName = "data/referance.cat";
+    char *objName = "data/object.cat";
+    char *cmpOutName = "data/cmpOut.cat";
+    float errorBox = 0.7;
+    
+    CrossMatch *cm = new CrossMatch();
+    cm->compareResult(refName, objName, cmpOutName, errorBox);
+    cm->freeAllMemory();
+
+}

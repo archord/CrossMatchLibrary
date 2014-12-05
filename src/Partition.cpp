@@ -11,6 +11,7 @@
 #include <math.h>
 #include <time.h>
 #include "Partition.h"
+#include "StarFile.h"
 
 Partition::Partition() {
 }
@@ -28,13 +29,14 @@ Partition::~Partition() {
     freeZoneArray();
 }
 
-void Partition::partitonStarField(CMStar *starList, int starNum) {
+void Partition::partitonStarField(StarFile *starFile) {
 
-    totalStar = starNum;
+    totalStar = starFile->starNum;
+    CMStar *starList = starFile->starList;
 
     getMinMaxXY(starList);
 
-    float zoneLength = sqrt(fieldWidth * fieldHeight / starNum);
+    float zoneLength = sqrt(fieldWidth * fieldHeight / totalStar);
     if (zoneLength < minZoneLength)
         zoneLength = minZoneLength;
     zoneInterval = zoneLength;

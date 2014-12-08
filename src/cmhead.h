@@ -76,6 +76,8 @@ double getGreatCircleDistance(CMStar *p1, CMStar *p2);
 template<typename T>
 inline T getMax(const T& a, const T& b);
 long countFileLines(char *fName);
+double angToRad(double angle);
+float getAngleFromGreatCircle(double dec, double dist);
 
 #endif	/* CMHEAD_H */
 

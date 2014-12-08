@@ -35,15 +35,6 @@ PartitionSphere::~PartitionSphere() {
 
 }
 
-double PartitionSphere::angToRad(double angle) {
-  return angle * ANG_TO_RAD;
-}
-
-float PartitionSphere::getAngleFromGreatCircle(double dec, double errorRadius) {
-  double rst = acos((cos(errorRadius * ANG_TO_RAD) - pow(sin(dec * ANG_TO_RAD), 2)) / pow(cos(dec * ANG_TO_RAD), 2));
-  return rst*RAD_TO_ANG;
-}
-
 long PartitionSphere::getPointBranch(CMStar *point) {
 
   float alpha = (point->alpha - raMini);

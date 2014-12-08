@@ -54,19 +54,18 @@ public:
   PartitionSphere(float errBox, float minZoneLen, float searchRds);
   virtual ~PartitionSphere();
 
-  float getAngleFromGreatCircle(double dec, double errorRadius);
   void initRaRadiusIndex();
   void getAreaBoundary(CMStar *head);
   void getZoneLength();
   void initAreaNode(CMStar *point);
   void addDataToTree(CMStar *head);
   long *getPointSearchBranch(CMStar *point, long *number);
-  double angToRad(double angle);
   long getPointBranch(CMStar *point);
   void addPointToBranchSort(CMStar *point, CMZone *branch);
   void addPointToBranchNotSort(CMStar *point, CMZone *branch);
   double searchSimilarPoint(CMStar *branch, CMStar *point, CMStar **goalPoint);
   bool hasSimilarPoint(CMStar *point);
+  
   void getMatchStar(CMStar *point);
   void getMatchStar12(CMStar *point);
   void getMatchStar2(CMStar *point);

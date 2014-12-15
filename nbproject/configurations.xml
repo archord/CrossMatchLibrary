@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="89">
+<configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>src/CrossMatch.h</itemPath>
+      <itemPath>src/CrossMatchSphere.h</itemPath>
       <itemPath>src/Partition.h</itemPath>
+      <itemPath>src/PartitionSphere.h</itemPath>
+      <itemPath>src/StarFile.h</itemPath>
       <itemPath>src/cmhead.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -16,7 +19,10 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>src/CrossMatch.cpp</itemPath>
+      <itemPath>src/CrossMatchSphere.cpp</itemPath>
       <itemPath>src/Partition.cpp</itemPath>
+      <itemPath>src/PartitionSphere.cpp</itemPath>
+      <itemPath>src/StarFile.cpp</itemPath>
       <itemPath>src/cmutils.cpp</itemPath>
       <itemPath>src/example.cpp</itemPath>
     </logicalFolder>
@@ -36,8 +42,7 @@
   <confs>
     <conf name="Debug" type="2">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
@@ -50,9 +55,21 @@
       </item>
       <item path="src/CrossMatch.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/CrossMatchSphere.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/CrossMatchSphere.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Partition.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Partition.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/PartitionSphere.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/PartitionSphere.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/StarFile.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/StarFile.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/cmhead.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -63,7 +80,6 @@
     </conf>
     <conf name="Release" type="2">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>default</compilerSet>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -86,9 +102,21 @@
       </item>
       <item path="src/CrossMatch.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/CrossMatchSphere.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/CrossMatchSphere.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Partition.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Partition.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/PartitionSphere.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/PartitionSphere.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/StarFile.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/StarFile.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/cmhead.h" ex="false" tool="3" flavor2="0">
       </item>

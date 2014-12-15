@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="89">
+<configurationDescriptor version="90">
   <projectmakefile>CrossMatchLibrary-Makefile.mk</projectmakefile>
   <confs>
     <conf name="Debug" type="2">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <developmentServer>gwac@190.168.1.25:22</developmentServer>
         <platform>2</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">
@@ -38,7 +38,7 @@
     <conf name="Release" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <platform>2</platform>
+        <platform>3</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">
         <gdb_pathmaps>

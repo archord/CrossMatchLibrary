@@ -36,8 +36,12 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/src/CrossMatch.o \
+	${OBJECTDIR}/src/CrossMatchSphere.o \
 	${OBJECTDIR}/src/Partition.o \
-	${OBJECTDIR}/src/cmutils.o
+	${OBJECTDIR}/src/PartitionSphere.o \
+	${OBJECTDIR}/src/StarFile.o \
+	${OBJECTDIR}/src/cmutils.o \
+	${OBJECTDIR}/src/example.o
 
 
 # C Compiler Flags
@@ -69,15 +73,35 @@ ${OBJECTDIR}/src/CrossMatch.o: src/CrossMatch.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/CrossMatch.o src/CrossMatch.cpp
 
+${OBJECTDIR}/src/CrossMatchSphere.o: src/CrossMatchSphere.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/CrossMatchSphere.o src/CrossMatchSphere.cpp
+
 ${OBJECTDIR}/src/Partition.o: src/Partition.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/Partition.o src/Partition.cpp
 
+${OBJECTDIR}/src/PartitionSphere.o: src/PartitionSphere.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/PartitionSphere.o src/PartitionSphere.cpp
+
+${OBJECTDIR}/src/StarFile.o: src/StarFile.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/StarFile.o src/StarFile.cpp
+
 ${OBJECTDIR}/src/cmutils.o: src/cmutils.cpp 
 	${MKDIR} -p ${OBJECTDIR}/src
 	${RM} $@.d
 	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/cmutils.o src/cmutils.cpp
+
+${OBJECTDIR}/src/example.o: src/example.cpp 
+	${MKDIR} -p ${OBJECTDIR}/src
+	${RM} $@.d
+	$(COMPILE.cc) -g -fPIC  -MMD -MP -MF $@.d -o ${OBJECTDIR}/src/example.o src/example.cpp
 
 # Subprojects
 .build-subprojects:

@@ -115,7 +115,7 @@ void PartitionSphere::initRaRadiusIndex() {
   }
 
 #ifdef PRINT_CM_DETAIL
-    printf("ra radius index length: %d\n", num);
+  printf("ra radius index length: %d\n", num);
 #endif
 }
 
@@ -175,17 +175,25 @@ void PartitionSphere::getZoneLength() {
   raNode = ceil((raMaxi - raMini + 1) * factor);
 }
 
+void PartitionSphere::partitonStarField(StarFile *starFile) {
+
+  totalStar = starFile->starNum;
+  CMStar *starList = starFile->starList;
+  initAreaNode(starList);
+  addDataToTree(starList);
+}
+
 void PartitionSphere::initAreaNode(CMStar *point) {
 
   getAreaBoundary(point);
   getZoneLength();
   initRaRadiusIndex();
 
-  int totalNode = decNode*raNode;
-  zoneArray = (CMZone *) malloc(sizeof (CMZone) * totalNode);
+  totalZone = decNode*raNode;
+  zoneArray = (CMZone *) malloc(sizeof (CMZone) * totalZone);
 
   int i = 0;
-  for (i = 0; i < totalNode; i++) {
+  for (i = 0; i < totalZone; i++) {
     zoneArray[i].star = NULL;
     zoneArray[i].starNum = 0;
   }
@@ -213,8 +221,8 @@ void PartitionSphere::addDataToTree(CMStar *head) {
   end = clock();
 
 #ifdef PRINT_CM_DETAIL
-    printf("totle point in index: %d\n", i);
-    printf("time of init index is: %fs\n", (end - start)*1.0 / ONESECOND);
+  printf("totle point in index: %d\n", i);
+  printf("time of init index is: %fs\n", (end - start)*1.0 / ONESECOND);
 #endif
 }
 
@@ -321,6 +329,10 @@ bool PartitionSphere::hasSimilarPoint(CMStar *point) {
   return false;
 }
 
+/**
+ * 计算误差半径内所有匹配新的个数
+ * @param point
+ */
 void PartitionSphere::getMatchStar(CMStar *point) {
 
   long numArea = 0;
@@ -328,9 +340,9 @@ void PartitionSphere::getMatchStar(CMStar *point) {
   branchIndex = getPointSearchBranch(point, &numArea);
 
   //232.890152 21.188778
-//  if (fabs(point->alpha - 232.890152) < CompareFloat && fabs(point->delta - 21.188778) < CompareFloat) {
-//    printf("%s", point->line);
-//  }
+  //  if (fabs(point->alpha - 232.890152) < CompareFloat && fabs(point->delta - 21.188778) < CompareFloat) {
+  //    printf("%s", point->line);
+  //  }
 
   double minError = areaBox;
   CMStar *minPoint = NULL;
@@ -348,7 +360,11 @@ void PartitionSphere::getMatchStar(CMStar *point) {
   free(branchIndex);
 }
 
-void PartitionSphere::getMatchStar12(CMStar *point) {
+/**
+ * 在误差半径范围内，搜寻所有星，返回距离最小的匹配星
+ * @param point
+ */
+void PartitionSphere::getMatchStar1(CMStar *point) {
 
   long numArea = 0;
   long *branchIndex = NULL;
@@ -377,6 +393,10 @@ void PartitionSphere::getMatchStar12(CMStar *point) {
   free(branchIndex);
 }
 
+/**
+ * 在误差半径内，只要找到匹配的星，就退出搜寻。
+ * @param point
+ */
 void PartitionSphere::getMatchStar2(CMStar *point) {
 
   long numArea = 0;
@@ -409,4 +429,31 @@ void PartitionSphere::getMatchStar2(CMStar *point) {
   }
 
   free(branchIndex);
+}
+
+void PartitionSphere::freeZoneArray() {
+
+  if (NULL != raRadiusIndex) {
+    free(raRadiusIndex);
+  }
+
+  if (NULL != zoneArray) {
+    for (int i = 0; i < totalZone; i++) {
+      freeStarList(zoneArray[i].star);
+    }
+    free(zoneArray);
+  }
+}
+
+void PartitionSphere::freeStarList(CMStar *starList) {
+
+  if (NULL != starList) {
+    CMStar *tStar = starList->next;
+    while (tStar) {
+      starList->next = tStar->next;
+      free(tStar);
+      tStar = starList->next;
+    }
+    free(starList);
+  }
 }

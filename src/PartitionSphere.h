@@ -9,6 +9,7 @@
 #define	PARTITIONSPHERE_H
 
 #include "cmhead.h"
+#include "StarFile.h"
 
 class PartitionSphere {
 protected:
@@ -16,7 +17,7 @@ protected:
   double errRadius;
   double areaBox; //判断两颗星是一颗星的最大误差，默认为20角秒
   double minZoneLength; //3 times of areaBox
-  double searchRadius ; //search radius, great circle
+  double searchRadius; //search radius, great circle
 
   //for plane coordiante's partition
   int areaWidth;
@@ -25,7 +26,7 @@ protected:
   int planeZoneX;
   int planeZoneY;
   int showProcessInfo;
-  
+
   long raMini;
   long decMini;
   long raMaxi;
@@ -46,31 +47,36 @@ protected:
 
   float *raRadiusIndex;
 
+  int totalZone; //分区的总个数
+  int totalStar; //星的总数
   CMZone *zoneArray; //分区数组
 
 public:
   PartitionSphere();
-  PartitionSphere(const PartitionSphere& orig); 
+  PartitionSphere(const PartitionSphere& orig);
   PartitionSphere(float errBox, float minZoneLen, float searchRds);
   virtual ~PartitionSphere();
 
-  void initRaRadiusIndex();
-  void getAreaBoundary(CMStar *head);
-  void getZoneLength();
-  void initAreaNode(CMStar *point);
-  void addDataToTree(CMStar *head);
-  long *getPointSearchBranch(CMStar *point, long *number);
-  long getPointBranch(CMStar *point);
-  void addPointToBranchSort(CMStar *point, CMZone *branch);
-  void addPointToBranchNotSort(CMStar *point, CMZone *branch);
-  double searchSimilarPoint(CMStar *branch, CMStar *point, CMStar **goalPoint);
-  bool hasSimilarPoint(CMStar *point);
-  
+  void partitonStarField(StarFile *starFile);
   void getMatchStar(CMStar *point);
-  void getMatchStar12(CMStar *point);
+  void getMatchStar1(CMStar *point);
   void getMatchStar2(CMStar *point);
+  void freeZoneArray();
 
 protected:
+  void initRaRadiusIndex();
+  void initAreaNode(CMStar *point);
+  void addDataToTree(CMStar *head);
+  double searchSimilarPoint(CMStar *branch, CMStar *point, CMStar **goalPoint);
+  long *getPointSearchBranch(CMStar *point, long *number);
+  long getPointBranch(CMStar *point);
+  void getAreaBoundary(CMStar *head);
+  void getZoneLength();
+  void addPointToBranchSort(CMStar *point, CMZone *branch);
+  void addPointToBranchNotSort(CMStar *point, CMZone *branch);
+  bool hasSimilarPoint(CMStar *point);
+  void freeStarList(CMStar *starList);
+
 };
 
 #endif	/* PARTITION_H */

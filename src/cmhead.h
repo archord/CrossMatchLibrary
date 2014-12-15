@@ -79,5 +79,12 @@ long countFileLines(char *fName);
 double angToRad(double angle);
 float getAngleFromGreatCircle(double dec, double dist);
 
+bool isEmpty(char *str);
+bool hasNumber(char *str);
+void ltrim(char *s);
+void rtrim(char *s);
+void trim(char *s);
+void trimAll(char *s);
+
 #endif	/* CMHEAD_H */
 

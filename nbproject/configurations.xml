@@ -40,7 +40,7 @@
   </logicalFolder>
   <projectmakefile>CrossMatchLibrary-Makefile.mk</projectmakefile>
   <confs>
-    <conf name="Debug" type="2">
+    <conf name="Debug" type="3">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
@@ -48,9 +48,8 @@
         <rebuildPropChanged>false</rebuildPropChanged>
       </toolsSet>
       <compileType>
-        <linkerTool>
-          <commandLine>-lm</commandLine>
-        </linkerTool>
+        <archiverTool>
+        </archiverTool>
       </compileType>
       <item path="src/CrossMatch.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -92,6 +91,7 @@
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <commandLine>-O2</commandLine>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>

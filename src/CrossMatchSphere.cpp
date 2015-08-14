@@ -123,7 +123,16 @@ void CrossMatchSphere::freeStarList(CMStar *starList) {
 }
 
 void CrossMatchSphere::freeAllMemory() {
-
+  
+  //释放在PartitionSphere::getMatchStar3匹配中，复制出来的CMStar
+  //该匹配方式记录所有匹配的星，需要对每个匹配的星做一个拷贝
+  if (NULL != objStarFile){
+    CMStar *starList = objStarFile->starList;
+    while (starList) {
+      freeStarList(starList->match);
+      starList = starList->next;
+    }
+  }
   if (NULL != refStarFile)
     refStarFile->~StarFile();
   if (NULL != objStarFile)

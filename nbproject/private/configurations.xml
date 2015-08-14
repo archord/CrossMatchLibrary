@@ -2,7 +2,7 @@
 <configurationDescriptor version="89">
   <projectmakefile>CrossMatchLibrary-Makefile.mk</projectmakefile>
   <confs>
-    <conf name="Debug" type="2">
+    <conf name="Debug" type="3">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <platform>2</platform>
@@ -38,7 +38,7 @@
     <conf name="Release" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
-        <platform>3</platform>
+        <platform>2</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">
         <gdb_pathmaps>

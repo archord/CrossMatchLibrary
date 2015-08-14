@@ -431,6 +431,44 @@ void PartitionSphere::getMatchStar2(CMStar *point) {
   free(branchIndex);
 }
 
+/**
+ * 在误差半径范围内，记录所有匹配的星
+ * @param point
+ */
+void PartitionSphere::getMatchStar3(CMStar *point) {
+
+  long numArea = 0;
+  long *branchIndex = NULL;
+  branchIndex = getPointSearchBranch(point, &numArea);
+
+  double minError = areaBox;
+  CMStar *tmch = NULL;
+  for (int i = 0; i < numArea; i++) {
+    if (branchIndex[i] > totalZone - 1) {
+      continue;
+    }
+    CMStar *tSample = zoneArray[branchIndex[i]].star;
+    int k = 0;
+    while (tSample) {
+      float distance = getGreatCircleDistance(tSample, point);
+      if (distance < minError) {
+        CMStar *tmp = tSample->copy();
+        tmp->error = distance;
+        point->matchNum = point->matchNum + 1;
+        if (NULL == point->match) {
+          point->match = tmp;
+        } else {
+          tmch->next = tmp;
+        }
+        tmch = tmp;
+      }
+      tSample = tSample->next;
+    }
+  }
+
+  free(branchIndex);
+}
+
 void PartitionSphere::freeZoneArray() {
 
   if (NULL != raRadiusIndex) {
@@ -456,4 +494,56 @@ void PartitionSphere::freeStarList(CMStar *starList) {
     }
     free(starList);
   }
+}
+
+void PartitionSphere::printPartitionDetail() {
+
+  printf("min ra: %f\n", raMinf);
+  printf("min dec: %f\n", decMinf);
+  printf("max ra: %f\n", raMaxf);
+  printf("max dec: %f\n", decMaxf);
+  printf("zone length: %f\n", zoneInterval);
+  printf("zone width(ra): %d\n", raNode);
+  printf("zone height(dec): %d\n", decNode);
+  printf("total zones: %d\n", totalZone);
+  printf("total stars: %d\n", totalStar);
+}
+
+void PartitionSphere::writePartitionDetail(char *fname) {
+
+  FILE *fp;
+  if ((fp = fopen(fname, "w")) == NULL) {
+    printf("open file error!!\n");
+    return;
+  }
+
+  fprintf(fp, "min ra: %f\n", raMinf);
+  fprintf(fp, "min dec: %f\n", decMinf);
+  fprintf(fp, "max ra: %f\n", raMaxf);
+  fprintf(fp, "max dec: %f\n", decMaxf);
+  fprintf(fp, "zone length: %f\n", zoneInterval);
+  fprintf(fp, "zone width(ra): %d\n", raNode);
+  fprintf(fp, "zone height(dec): %d\n", decNode);
+  fprintf(fp, "total zones: %d\n", totalZone);
+  fprintf(fp, "total stars: %d\n", totalStar);
+
+  fprintf(fp, "\nZone details:\n");
+  fprintf(fp, "\nzoneId\txId\tyId\tstarNum\tX...\n");
+
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < totalZone; i++) {
+
+    if (zoneArray[i].starNum > 0) {
+      j++;
+      fprintf(fp, "%8d%5d%5d%8d", i + 1, i % raNode, i / raNode, zoneArray[i].starNum);
+      CMStar *tmp = zoneArray[i].star;
+      while (tmp) {
+        fprintf(fp, "%15.8f", tmp->alpha);
+        tmp = tmp->next;
+      }
+      fprintf(fp, "\n");
+    }
+  }
+  fclose(fp);
 }

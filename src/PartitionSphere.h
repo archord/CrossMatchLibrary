@@ -61,7 +61,10 @@ public:
   void getMatchStar(CMStar *point);
   void getMatchStar1(CMStar *point);
   void getMatchStar2(CMStar *point);
+  void getMatchStar3(CMStar *point);
   void freeZoneArray();
+  void printPartitionDetail();
+  void writePartitionDetail(char *fname);
 
 protected:
   void initRaRadiusIndex();

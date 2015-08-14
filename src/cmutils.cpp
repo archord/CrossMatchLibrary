@@ -134,3 +134,21 @@ void trimAll(char *s) {
   }
   *pTmp = '\0';
 }
+
+CMStar *CMStar::copy(){
+  CMStar *tmp = (CMStar *)malloc(sizeof(CMStar));
+  tmp->line = (char*)malloc((strlen(this->line)+1)*sizeof(char));
+  strcpy(tmp->line, this->line);
+  tmp->alpha = this->alpha;
+  tmp->delta = this->delta;
+  tmp->error = this->error;
+  tmp->id = this->id;
+  tmp->mag = this->mag;
+  tmp->matchNum = this->matchNum;
+  tmp->pixx = this->pixx;
+  tmp->pixy = this->pixy;
+  tmp->starId = this->starId;
+  tmp->next = NULL;
+  tmp->match = NULL;
+  return tmp;
+}

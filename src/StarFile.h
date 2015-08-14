@@ -16,15 +16,16 @@ public:
   char * fileName;
   CMStar *starList;
   long starNum;
+  int mode; //0 图像坐标系， 1天球坐标系
 
 public:
-  StarFile();
-  StarFile(char * fileName);
+  StarFile(int mode=0);
+  StarFile(char * fileName, int mode=0);
   StarFile(const StarFile& orig);
   virtual ~StarFile();
 
   void readStar();
-  void readStar(char * fileName);
+  void readStar(char * fileName, int *idxs = NULL, int pnum = 0);
   void writeStar(char * outFile);
 
 private:

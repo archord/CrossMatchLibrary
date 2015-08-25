@@ -16,7 +16,7 @@ public:
   char * fileName;
   CMStar *starList;
   long starNum;
-  int mode; //0 图像坐标系， 1天球坐标系
+  int mode; //0 赋值到图像坐标系，下一步讲对星表在图像坐标系分区匹配； 1赋值到天球坐标系，下一步讲对星表在天球坐标系分区匹配
 
 public:
   StarFile(int mode=0);

@@ -96,8 +96,8 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
   CMStar *tStar = NULL;
   CMStar *nextStar = NULL;
   char line[MaxStringLength];
-  float pixx = 0.0;
-  float pixy = 0.0;
+  float data1 = 0.0;
+  float data2 = 0.0;
   float mag = 0.0;
 
   char farmatStr[255] = {0};
@@ -119,15 +119,15 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
   }
 
   while (fgets(line, MaxStringLength, fp) != NULL) {
-    if (readNum == sscanf(line, farmatStr, &pixx, &pixy, &mag)) {
+    if (readNum == sscanf(line, farmatStr, &data1, &data2, &mag)) {
       nextStar = (CMStar *) malloc(sizeof (CMStar));
       nextStar->id = starNum;
       if (mode == 0) {
-        nextStar->pixx = pixx;
-        nextStar->pixy = pixy;
+        nextStar->pixx = data1;
+        nextStar->pixy = data2;
       } else {
-        nextStar->alpha = pixx;
-        nextStar->delta = pixy;
+        nextStar->alpha = data1;
+        nextStar->delta = data2;
       }
       nextStar->mag = mag;
       nextStar->next = NULL;
@@ -151,4 +151,19 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
 }
 
 void StarFile::writeStar(char * outFile) {
+
+  FILE *fp = fopen(outFile, "w");
+
+  long count = 0;
+  CMStar *tStar = starList;
+  while (NULL != tStar) {
+    fprintf(fp, "%%f", tStar->line);
+    count++;
+    tStar = tStar->next;
+  }
+  fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+  printf("total write %d lines.\n", count);
+#endif
 }

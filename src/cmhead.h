@@ -34,8 +34,8 @@ public:
     long starId;
     float pixx;
     float pixy;
-    float alpha;
-    float delta;
+    float alpha; //ra
+    float delta; //dec
     float mag;
     float error;
     int matchNum;

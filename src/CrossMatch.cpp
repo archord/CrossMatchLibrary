@@ -195,30 +195,12 @@ void CrossMatch::compareResult(char *refName, char *objName, char *outfName, flo
     fclose(fp);
 }
 
-void CrossMatch::printMatchedRst(char *outfName, float errorBox) {
+void CrossMatch::printMatchedPairs(char *outfName, float errorBox) {
 
-    FILE *fp = fopen(outfName, "w");
-    fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
-
-    long count = 0;
-    CMStar *tStar = objStarFile->starList;
-    while (NULL != tStar) {
-        if (NULL != tStar->match && tStar->error < errorBox) {
-            fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
-                    tStar->starId, tStar->pixx, tStar->pixy, tStar->match->starId,
-                    tStar->match->pixx, tStar->match->pixy, tStar->error);
-            count++;
-        }
-        tStar = tStar->next;
-    }
-    fclose(fp);
-
-#ifdef PRINT_CM_DETAIL
-    printf("matched stars %d\n", count);
-#endif
+    printMatchedPairs(outfName, objStarFile, errorBox);
 }
 
-void CrossMatch::printMatchedRst(char *outfName, StarFile *starFile, float errorBox) {
+void CrossMatch::printMatchedPairs(char *outfName, StarFile *starFile, float errorBox) {
 
     FILE *fp = fopen(outfName, "w");
     fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
@@ -238,6 +220,92 @@ void CrossMatch::printMatchedRst(char *outfName, StarFile *starFile, float error
 
 #ifdef PRINT_CM_DETAIL
     printf("matched stars %d\n", count);
+#endif
+}
+
+
+void CrossMatch::printMatched(char *outfName, CMStar *tStar, float errorBox) {
+
+    FILE *fp = fopen(outfName, "w");
+    
+    long count = 0;
+    while (NULL != tStar) {
+        if (NULL != tStar->match && tStar->error < errorBox) {
+            fprintf(fp, "%s",tStar->line);
+            count++;
+        }
+        tStar = tStar->next;
+    }
+    fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+    printf("matched stars %d\n", count);
+#endif
+}
+
+void CrossMatch::printNotMatched(char *outfName, CMStar *tStar) {
+
+    FILE *fp = fopen(outfName, "w");
+
+    long count = 0;
+    while (NULL != tStar) {
+        if (NULL == tStar->match) {
+            fprintf(fp, "%s",tStar->line);
+            count++;
+        }
+        tStar = tStar->next;
+    }
+    fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+    printf("OT stars %d\n", count);
+#endif
+}
+
+/**
+ * circle(1298.45614218,3529.17511152,8.4547586441) # color=green width=2 text={12} font="times 7"
+ * @param outfName
+ * @param starFile
+ * @param errorBox
+ */
+void CrossMatch::printMatchedDs9(char *outfName, CMStar *tStar, float errorBox) {
+
+    FILE *fp = fopen(outfName, "w");
+    
+    long count = 0;
+    while (NULL != tStar) {
+        if (NULL != tStar->match && tStar->error < errorBox) {
+            fprintf(fp, "circle(%.2f,%.2f,%.2f) # color=green width=2 text={%d} font=\"times 7\"\n",
+                    tStar->pixx, tStar->pixy, tStar->mag, tStar->id);
+            count++;
+        }
+        tStar = tStar->next;
+    }
+    fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+    printf("matched stars %d\n", count);
+#endif
+}
+
+
+void CrossMatch::printNotMatchedDs9(char *outfName, CMStar *tStar) {
+
+    FILE *fp = fopen(outfName, "w");
+
+    long count = 0;
+    while (NULL != tStar) {
+        if (NULL == tStar->match) {
+            fprintf(fp, "circle(%.2f,%.2f,%.2f) # color=green width=2 text={%d} font=\"times 7\"\n",
+                    tStar->pixx, tStar->pixy, tStar->mag, tStar->id);
+            count++;
+        }
+        tStar = tStar->next;
+    }
+    fclose(fp);
+
+#ifdef PRINT_CM_DETAIL
+    printf("OT stars %d\n", count);
 #endif
 }
 
@@ -299,7 +367,7 @@ void CrossMatch::testCrossMatch() {
     
     CrossMatch *cm = new CrossMatch();
     cm->match(refName, objName, errorBox);
-    cm->printMatchedRst(matchedName, errorBox);
+    cm->printMatchedPairs(matchedName, errorBox);
     cm->printOTStar(otName, errorBox);
     cm->freeAllMemory();
 

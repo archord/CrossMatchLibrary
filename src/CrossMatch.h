@@ -26,13 +26,18 @@ public:
   void compareResult(char *refName, char *objName, char *outName, float errorBox);
   void matchNoPartition(char *refName, char *objName, float errorBox);
   void matchNoPartition(StarFile *ref, StarFile *obj, float errorBox);
-  void printMatchedRst(char *outfName, float errorBox);
-  void printMatchedRst(char *outfName, StarFile *starList, float errorBox);
+  void printMatchedPairs(char *outfName, float errorBox);
+  void printMatchedPairs(char *outfName, StarFile *starList, float errorBox);
   void printOTStar(char *outfName, float errorBox);
   void printAllStarList(char *outfName, StarFile *starList, float errorBox);
   void freeAllMemory();
   void testCrossMatch();
   void partitionAndNoPartitionCompare();
+  
+  void printMatched(char *outfName, CMStar *tstars, float errorBox);
+  void printNotMatched(char *outfName, CMStar *tstars);
+  void printMatchedDs9(char *outfName, CMStar *tstars, float errorBox);
+  void printNotMatchedDs9(char *outfName, CMStar *tstars);
 
 protected:
 

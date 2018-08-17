@@ -114,14 +114,16 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
   }
 
   int readNum = 3;
-  if (idxs[2] == 0) {//不读mag值
+  if (idxs != NULL && idxs[2] == 0) {//不读mag值
     readNum = 2;
   }
 
   while (fgets(line, MaxStringLength, fp) != NULL) {
     if (readNum == sscanf(line, farmatStr, &data1, &data2, &mag)) {
       nextStar = (CMStar *) malloc(sizeof (CMStar));
+      starNum++;
       nextStar->id = starNum;
+      nextStar->matchNum = 0;
       if (mode == 0) {
         nextStar->pixx = data1;
         nextStar->pixy = data2;
@@ -141,7 +143,6 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
         tStar->next = nextStar;
         tStar = nextStar;
       }
-      starNum++;
     }
   }
 

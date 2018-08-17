@@ -219,30 +219,12 @@ void CrossMatchSphere::compareResult(char *refName, char *objName, char *outfNam
   freeAllMemory();
 }
 
-void CrossMatchSphere::printMatchedRst(char *outfName, float errorBox) {
+void CrossMatchSphere::printMatchedPairs(char *outfName, float errorBox) {
 
-  FILE *fp = fopen(outfName, "w");
-  fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");
-
-  long count = 0;
-  CMStar *tStar = objStarFile->starList;
-  while (NULL != tStar) {
-    if (NULL != tStar->match && tStar->error < errorBox) {
-      fprintf(fp, "%8ld %12f %12f %8ld %12f %12f %12f\n",
-              tStar->starId, tStar->pixx, tStar->pixy, tStar->match->starId,
-              tStar->match->pixx, tStar->match->pixy, tStar->error);
-      count++;
-    }
-    tStar = tStar->next;
-  }
-  fclose(fp);
-
-#ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
-#endif
+  printMatchedPairs(outfName, objStarFile->starList, errorBox);
 }
 
-void CrossMatchSphere::printMatchedRst(char *outfName, CMStar *starList, float errorBox) {
+void CrossMatchSphere::printMatchedPairs(char *outfName, CMStar *starList, float errorBox) {
 
   FILE *fp = fopen(outfName, "w");
   fprintf(fp, "Id\tX\tY\tmId\tmX\tmY\tdistance\n");

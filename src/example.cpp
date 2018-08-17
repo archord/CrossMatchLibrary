@@ -11,23 +11,23 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 7) {
-    printf("Usage: crossmatch ref1.cat ref2.cat obj.cat out.cat errbox1 errbox2\n");
+  if (!(argc == 5 || argc ==9)) {
+    printf("Usage: crossmatch ref.cat obj.cat out.cat errbox [paramNum] [xidx] [yidx] [magidx] \n");
     return 0;
   }
 
   char *refName = argv[1];
-  char *ref2Name = argv[2];
-  char *objName = argv[3];
-//  char *matchedName = "data/matched.cat";
-  char *otName = argv[4];
-  float errorBox1 = atof(argv[5]);
-  float errorBox2 = atof(argv[6]);
+  char *objName = argv[2];
+  
+  char *otName = argv[3];
+  float errorBox1 = atof(argv[4]);
+  
+  int pNum = atoi(argv[5]);
+  int idxs = {atoi(argv[6]),atoi(argv[7]),atoi(argv[8])};
 
   CrossMatch *cm = new CrossMatch();
-//  cm->matchSphere(refName, ref2Name, objName, errorBox1, errorBox2);
-//  cm->printMatchedRstSphere(matchedName, errorBox1);
-//  cm->printOTStarSphere2(otName, errorBox1);
+  cm->match(refName, objName, errorBox1);
+  cm->printMatchedRst(otName, errorBox1);
   cm->freeAllMemory();
   return 0;
 }

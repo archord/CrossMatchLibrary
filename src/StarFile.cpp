@@ -78,7 +78,7 @@ void StarFile::readStar() {
  * @param pnum读入数据的总列数
  * @return 
  */
-void StarFile::readStar(char * fileName, int *idxs, int pnum) {
+void StarFile::readStar(char * fileName, int *idxs) {
 
   if (NULL == fileName) {
     printf("file name is NULL!\n");
@@ -100,6 +100,25 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
   float data2 = 0.0;
   float mag = 0.0;
 
+  while (fgets(line, MaxStringLength, fp) != NULL) {
+    if (line[0] != '#') {
+      break;
+    }
+  }
+
+  int pnum = 0;
+  char *p;
+  const char *delim = " ";
+  p = strtok(line, delim);
+  while (p!=NULL) {
+    pnum++;
+    p = strtok(NULL, delim);
+  }
+  
+  if(pnum<=3){
+    idxs = NULL;
+  }
+
   char farmatStr[255] = {0};
   if (idxs == NULL) {
     sprintf(farmatStr, "%%f%%f%%f");
@@ -114,11 +133,11 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
   }
 
   int readNum = 3;
-  if (idxs != NULL && idxs[2] == 0) {//不读mag值
+  if ((idxs != NULL && idxs[2] == 0)||(pnum==2) ){//不读mag值
     readNum = 2;
   }
 
-  while (fgets(line, MaxStringLength, fp) != NULL) {
+  do {
     if (readNum == sscanf(line, farmatStr, &data1, &data2, &mag)) {
       nextStar = (CMStar *) malloc(sizeof (CMStar));
       starNum++;
@@ -144,7 +163,7 @@ void StarFile::readStar(char * fileName, int *idxs, int pnum) {
         tStar = nextStar;
       }
     }
-  }
+  } while (fgets(line, MaxStringLength, fp) != NULL);
 
 #ifdef PRINT_CM_DETAIL
   printf("%s read %d stars\n", fileName, starNum);

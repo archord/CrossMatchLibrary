@@ -144,13 +144,13 @@ CMStar *PartitionSelf::match() {
   return headStar;
 }
 
-void CrossMatchSelf::match(char *infile, float errorBox, int *idxs, int pnum) {
+void CrossMatchSelf::match(char *infile, float errorBox, int *idxs) {
 
   float minZoneLen = errorBox * TimesOfErrorRadius;
   float searchRds = errorBox;
 
   StarFile *tstarFile = new StarFile();
-  tstarFile->readStar(infile, idxs, pnum);
+  tstarFile->readStar(infile, idxs);
 
   zones = new PartitionSelf(errorBox, minZoneLen, searchRds);
   zones->partitonStarField(tstarFile);

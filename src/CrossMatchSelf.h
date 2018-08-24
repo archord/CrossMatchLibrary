@@ -17,7 +17,7 @@
 #include "Partition.h"
 #include "CrossMatch.h"
 
-#define PRINT_CM_DETAIL
+//#define PRINT_CM_DETAIL
 
 class PartitionSelf : public Partition {
 public:
@@ -40,7 +40,7 @@ public:
 
 public:
   CMStar *readStarFile(char *fName, int &starNum);
-  void match(char *infile, float errorBox, int *idxs = NULL, int pnum = 0);
+  void match(char *infile, float errorBox, int *idxs = NULL);
   void freeAllMemory();
   void freeStarList(CMStar *starList);
   void freeMchList(CMStar *starList);

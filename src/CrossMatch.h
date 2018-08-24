@@ -23,6 +23,8 @@ public:
 
   void match(char *refName, char *objName, float errorBox);
   void match(StarFile *ref, StarFile *obj, float errorBox);
+  void match(char *refName, char *objName, float errorBox, int *idxs);
+  
   void compareResult(char *refName, char *objName, char *outName, float errorBox);
   void matchNoPartition(char *refName, char *objName, float errorBox);
   void matchNoPartition(StarFile *ref, StarFile *obj, float errorBox);
@@ -38,8 +40,6 @@ public:
   void printNotMatched(char *outfName, CMStar *tstars);
   void printMatchedDs9(char *outfName, CMStar *tstars, float errorBox);
   void printNotMatchedDs9(char *outfName, CMStar *tstars);
-
-protected:
 
   StarFile *refStarFile;
   StarFile *objStarFile;

@@ -25,7 +25,7 @@ public:
   virtual ~StarFile();
 
   void readStar();
-  void readStar(char * fileName, int *idxs = NULL, int pnum = 0);
+  void readStar(char * fileName, int *idxs = NULL);
   void writeStar(char * outFile);
 
 private:

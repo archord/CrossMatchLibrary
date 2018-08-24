@@ -14,7 +14,7 @@
 class CrossMatchSphere {
 public:
 
-    static const int TimesOfErrorRadius = 10; //length of search radius
+    static const int TimesOfErrorRadius = 10; //length of search radius 
 
     CrossMatchSphere();
     CrossMatchSphere(const CrossMatchSphere& orig);

@@ -21,6 +21,7 @@ CrossMatchSphere::CrossMatchSphere() {
 }
 
 CrossMatchSphere::CrossMatchSphere(const CrossMatchSphere& orig) {
+  
 }
 
 CrossMatchSphere::~CrossMatchSphere() {

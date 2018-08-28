@@ -36,6 +36,7 @@ public:
   void testCrossMatch();
   void partitionAndNoPartitionCompare();
   
+  void printMatchedPair(char *outfName, CMStar *tStar, float errorBox);
   void printMatched(char *outfName, CMStar *tstars, float errorBox);
   void printNotMatched(char *outfName, CMStar *tstars);
   void printMatchedDs9(char *outfName, CMStar *tstars, float errorBox);

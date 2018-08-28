@@ -21,6 +21,9 @@ int main(int argc, char **argv) {
     testCrossMatchMain(argc, argv);
   } else if (argc == 6 || argc == 3) {
     testSelfCrossMatchMain(argc, argv);
+  }else{
+    testCrossMatchMain(argc, argv);
+    testSelfCrossMatchMain(argc, argv);
   }
   return 0;
 }
@@ -49,10 +52,10 @@ void testSelfCrossMatch(char *objName, float errorBox, int *idxs) {
   string tname(objName);
   string preStr = tname.substr(0, tname.find('.'));
   const char *preChar = preStr.c_str();
-  sprintf(outName1, "%s_matched.cat", preChar);
-  sprintf(outName2, "%s_notMatched.cat", preChar);
-  sprintf(outName3, "%s_matchedDs9.reg", preChar);
-  sprintf(outName4, "%s_notMatchedDs9.reg", preChar);
+  sprintf(outName1, "%s_sm%.0f.cat", preChar, errorBox);
+  sprintf(outName2, "%s_sn%.0f.cat", preChar, errorBox);
+  sprintf(outName3, "%s_sm%.0f_ds9.reg", preChar, errorBox);
+  sprintf(outName4, "%s_sn%.0f_ds9.reg", preChar, errorBox);
 
   //  float errorBox = 32;
 
@@ -86,13 +89,15 @@ void testCrossMatchMain(int argc, char **argv) {
   char outName2[1024];
   char outName3[1024];
   char outName4[1024];
-  string tname(objName);
+  char outName5[1024];
+  string tname(outName);
   string preStr = tname.substr(0, tname.find('.'));
   const char *preChar = preStr.c_str();
-  sprintf(outName1, "%s_matched.cat", preChar);
-  sprintf(outName2, "%s_notMatched.cat", preChar);
-  sprintf(outName3, "%s_matchedDs9.reg", preChar);
-  sprintf(outName4, "%s_notMatchedDs9.reg", preChar);
+  sprintf(outName1, "%s_cm%.0f.cat", preChar, errorBox);
+  sprintf(outName2, "%s_cn%.0f.cat", preChar, errorBox);
+  sprintf(outName3, "%s_cm%.0f_ds9.reg", preChar, errorBox);
+  sprintf(outName4, "%s_cn%.0f_ds9.reg", preChar, errorBox);
+  sprintf(outName5, "%s_cm%.0f.pair", preChar, errorBox);
 
   CrossMatch *cm = new CrossMatch();
   cm->match(refName, objName, errorBox, idxs);
@@ -100,6 +105,7 @@ void testCrossMatchMain(int argc, char **argv) {
   cm->printNotMatched(outName2, cm->objStarFile->starList);
   cm->printMatchedDs9(outName3, cm->objStarFile->starList, errorBox);
   cm->printNotMatchedDs9(outName4, cm->objStarFile->starList);
+  cm->printMatchedPair(outName5, cm->objStarFile->starList, errorBox);
 
   cm->freeAllMemory();
 }

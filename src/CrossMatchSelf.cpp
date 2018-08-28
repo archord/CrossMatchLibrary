@@ -9,12 +9,12 @@
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "CrossMatchSelf.h"
 #include "cmhead.h"
 #include "StarFile.h"
 
 using namespace std;
-
 
 PartitionSelf::PartitionSelf() {
   starCount = 0;
@@ -42,12 +42,6 @@ void PartitionSelf::searchSimilarStar(long zoneIdx, CMStar *objStar) {
   CMStar *topStar = zoneArray[zoneIdx].star;
   CMStar *tmpStar = NULL;
 
-  /*
-  while (NULL != matchStar && NULL != matchStar->match) {
-    matchStar = matchStar->match;
-  }
-   */
-
   /**
    * 如果区域中的第一个星就匹配，则在去掉这个星后，区域的头指针需要指向下一个星
    * 在区域中去掉一颗星后，区域的星的总数要减1
@@ -55,13 +49,15 @@ void PartitionSelf::searchSimilarStar(long zoneIdx, CMStar *objStar) {
   while (nextStar) {
     float distance = getLineDistance(nextStar, objStar);
     if (distance < error) {
-      if(distance<objStar->error){
+      if (distance < objStar->error) {
         objStar->error = distance;
       }
       nextStar->error = distance;
 #ifdef PRINT_CM_DETAILa
       printf("mtch star id: %d\n", nextStar->id);
 #endif
+
+      //remove nextStar
       tmpStar = nextStar;
       if (zoneArray[zoneIdx].star == nextStar) {
         zoneArray[zoneIdx].star = nextStar->next;
@@ -71,16 +67,16 @@ void PartitionSelf::searchSimilarStar(long zoneIdx, CMStar *objStar) {
         topStar->next = nextStar->next;
         nextStar = nextStar->next;
       }
-      
+
       tmpStar->next = NULL;
       zoneArray[zoneIdx].starNum--;
       starCount++;
-      
+
       tmpStar->error = distance;
-      tmpStar->match=objStar->match;
+      tmpStar->match = objStar->match;
       objStar->match = tmpStar;
-      objStar->matchNum ++;
-      
+      objStar->matchNum++;
+
     } else {
       topStar = nextStar;
       nextStar = nextStar->next;
@@ -92,6 +88,7 @@ void PartitionSelf::searchSimilarStar(long zoneIdx, CMStar *objStar) {
 CMStar *PartitionSelf::match() {
 
   CMStar *headStar = NULL;
+  CMStar *frontStar = NULL;
   CMStar *curStar = NULL;
   int starClassify = 0;
 
@@ -103,25 +100,23 @@ CMStar *PartitionSelf::match() {
       printf("zone star: %d\n", zoneArray[idx].starNum);
 #endif
       while (NULL != zoneArray[idx].star) {
-        //headStar指向结果列表的第一颗星
-        //curStar指向当前待匹配的星
-        if (NULL == headStar) {
-          headStar = zoneArray[idx].star;
-          curStar = headStar;
-        } else {
-          curStar->next = zoneArray[idx].star;
-          curStar = curStar->next;
-        }
-#ifdef PRINT_CM_DETAILa
-        printf("obj star id: %ld\n", curStar->id);
-#endif
+
         //去掉当前这颗星
+        curStar = zoneArray[idx].star;
         zoneArray[idx].star = curStar->next;
         curStar->next = NULL;
         curStar->match = NULL;
+#ifdef PRINT_CM_DETAILa
+        printf("obj star id: %ld\n", curStar->id);
+#endif
+        //        curStar->id = 15944;
+        //        curStar->pixx = 1984.53;
+        //        curStar->pixy = 1916.479;
+
         //分区中星的总数减一
         zoneArray[idx].starNum--;
         starCount++;
+
         //分类星加一
         starClassify++;
         //寻找分类星的匹配星
@@ -131,6 +126,51 @@ CMStar *PartitionSelf::match() {
           searchSimilarStar(searchZonesIdx[i], curStar);
         }
         free(searchZonesIdx);
+
+        //如果上面的分区没匹配上，可能原因并不是周围没有目标。
+        //而是周围的目标已经与之前的目标匹配成功被去掉了，这里重新与之前匹配成功的目标匹配。
+        int mchFlag = 0;
+        if (curStar->match == NULL) {
+          CMStar *tStar = headStar;
+          while (NULL != tStar) {
+            float distance = getLineDistance(tStar, curStar);
+            if (distance < errRadius) {
+              curStar->match = tStar;
+              curStar->matchNum++;
+              mchFlag = 1;
+            } else {
+              CMStar *tStarMatch = tStar->match;
+              while (NULL != tStarMatch) {
+                float distance = getLineDistance(tStarMatch, curStar);
+                if (distance < errRadius) {
+                  curStar->match = tStarMatch;
+                  curStar->matchNum++;
+                  mchFlag = 1;
+                  break;
+                }
+                tStarMatch = tStarMatch->match;
+              }
+            }
+            if (mchFlag == 1) {
+              break;
+            }
+            tStar = tStar->next;
+          }
+        }
+        //headStar指向结果列表的第一颗星
+        //curStar指向当前待匹配的星
+        if (NULL == headStar) {
+          headStar = curStar;
+          frontStar = curStar;
+        } else if (curStar->match != NULL and mchFlag == 1) {
+          CMStar *tStar = curStar->match;
+          curStar->match = tStar->match;
+          tStar->match = curStar;
+        } else {
+          frontStar->next = curStar;
+          frontStar = curStar;
+        }
+
       }
     }
   }
@@ -139,6 +179,19 @@ CMStar *PartitionSelf::match() {
   printf("single stars: %d\n", starClassify);
   printf("total records: %ld\n", starCount);
   printf("total repeat records: %ld\n", rptStar);
+
+  int tnum = 0;
+  CMStar *tStar = headStar;
+  while (NULL != tStar) {
+    tnum++;
+    CMStar *tStarMatch = tStar->match;
+    while (NULL != tStarMatch) {
+      tnum++;
+      tStarMatch = tStarMatch->match;
+    }
+    tStar = tStar->next;
+  }
+  printf("after selfmatch %d\n", tnum);
 #endif
 
   return headStar;
@@ -154,11 +207,12 @@ void CrossMatchSelf::match(char *infile, float errorBox, int *idxs) {
 
   zones = new PartitionSelf(errorBox, minZoneLen, searchRds);
   zones->partitonStarField(tstarFile);
+  //zones->printZoneDetail("/run/shm/gwacsim/oi_partition.cat");
   tstarFile->starList = NULL;
   rstStar = zones->match();
 
 #ifdef PRINT_CM_DETAIL
-  printf("check match result:\n");  
+  printf("check match result:\n");
   int tnum = 0;
   CMStar *tStar = rstStar;
   while (tStar) {
@@ -172,7 +226,6 @@ void CrossMatchSelf::match(char *infile, float errorBox, int *idxs) {
   printf("match done!\n");
 #endif
 }
-
 
 void CrossMatchSelf::freeAllMemory() {
   freeRstList(rstStar);

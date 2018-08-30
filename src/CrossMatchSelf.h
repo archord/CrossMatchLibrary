@@ -39,7 +39,6 @@ public:
   PartitionSelf *zones;
 
 public:
-  CMStar *readStarFile(char *fName, int &starNum);
   void match(char *infile, float errorBox, int *idxs = NULL);
   void freeAllMemory();
   void freeStarList(CMStar *starList);

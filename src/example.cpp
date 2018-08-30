@@ -7,11 +7,13 @@
 #include <time.h>
 #include "CrossMatch.h"
 #include "CrossMatchSelf.h"
+#include "CrossMatchSelf2.h"
 
 using namespace std;
 
 void testCrossMatchMain(int argc, char **argv);
 void testSelfCrossMatchMain(int argc, char **argv);
+void testSelfCrossMatchMain2(int argc, char **argv);
 void partitionAndNoPartitionCompare();
 void testSelfCrossMatch(char *objName, float errorBox, int *idxs);
 
@@ -20,10 +22,12 @@ int main(int argc, char **argv) {
   if (argc == 4 || argc == 8) {
     testCrossMatchMain(argc, argv);
   } else if (argc == 6 || argc == 3) {
-    testSelfCrossMatchMain(argc, argv);
+    //testSelfCrossMatchMain(argc, argv);
+    testSelfCrossMatchMain2(argc, argv);
   }else{
     testCrossMatchMain(argc, argv);
-    testSelfCrossMatchMain(argc, argv);
+    //testSelfCrossMatchMain(argc, argv);
+    testSelfCrossMatchMain2(argc, argv);
   }
   return 0;
 }
@@ -67,6 +71,39 @@ void testSelfCrossMatch(char *objName, float errorBox, int *idxs) {
   cm->printNotMatched(outName2, cm->rstStar);
   cm->printMatchedDs9(outName3, cm->rstStar, errorBox);
   cm->printNotMatchedDs9(outName4, cm->rstStar);
+
+  cm->freeAllMemory();
+}
+
+void testSelfCrossMatchMain2(int argc, char **argv) {
+
+  if (!(argc == 6 || argc == 3)) {
+    printf("Usage: selfmatch obj.cat errbox [xidx] [yidx] [magidx] \n");
+    return;
+  }
+
+  char *objName = argv[1];
+  float errorBox = atof(argv[2]);
+  int idxs[] = {atoi(argv[3]), atoi(argv[4]), atoi(argv[5])};
+
+  char outName1[1024];
+  char outName2[1024];
+  char outName3[1024];
+  char outName4[1024];
+  string tname(objName);
+  string preStr = tname.substr(0, tname.find('.'));
+  const char *preChar = preStr.c_str();
+  sprintf(outName1, "%s_sm%.0f.cat", preChar, errorBox);
+  sprintf(outName2, "%s_sn%.0f.cat", preChar, errorBox);
+  sprintf(outName3, "%s_sm%.0f_ds9.reg", preChar, errorBox);
+  sprintf(outName4, "%s_sn%.0f_ds9.reg", preChar, errorBox);
+
+  CrossMatchSelf2 *cm = new CrossMatchSelf2();
+  cm->match(objName, objName, errorBox, idxs);
+  cm->printMatched(outName1, cm->objStarFile->starList, errorBox);
+  cm->printNotMatched(outName2, cm->objStarFile->starList);
+  cm->printMatchedDs9(outName3, cm->objStarFile->starList, errorBox);
+  cm->printNotMatchedDs9(outName4, cm->objStarFile->starList);
 
   cm->freeAllMemory();
 }

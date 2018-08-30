@@ -323,11 +323,6 @@ void CrossMatch::printNotMatchedDs9(char *outfName, CMStar *tStar) {
   long count = 0;
   while (NULL != tStar) {
     if (NULL == tStar->match) {
-        float tx = fabs(tStar->pixx-1024.7);
-        float ty = fabs(tStar->pixy-336.6);
-        if(tx<32 and ty<32){
-          printf("output: %ld, %f, %f\n",tStar->id, tStar->pixx, tStar->pixy);
-        }
       fprintf(fp, "image;circle(%.2f,%.2f,%.2f) # color=green width=1 text={%ld-%.2f} font=\"times 7\"\n",
               tStar->pixx, tStar->pixy, 4.0, tStar->id, tStar->mag);
       count++;

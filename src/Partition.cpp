@@ -116,6 +116,9 @@ CMStar *Partition::searchSimilarStar(long zoneIdx, CMStar *objStar) {
     CMStar *nextStar = zoneArray[zoneIdx].star;
     while (nextStar) {
         float distance = getLineDistance(nextStar, objStar);
+        if (distance < errRadius) {
+          objStar->matchNum++;
+        }
         if (distance < error) {
             goalStar = nextStar;
             error = distance;

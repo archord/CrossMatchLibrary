@@ -56,10 +56,12 @@ void CrossMatch::match(StarFile *refStarFile, StarFile *objStarFile, float error
   zones->partitonStarField(refStarFile);
   refStarFile->starList = NULL;
 
+  int i=0;
   CMStar *nextStar = objStarFile->starList;
   while (nextStar) {
     zones->getMatchStar(nextStar);
     nextStar = nextStar->next;
+    i++;
   }
 
 #ifdef PRINT_CM_DETAIL
@@ -229,7 +231,7 @@ void CrossMatch::printMatchedPairs(char *outfName, StarFile *starFile, float err
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
+  printf("matched stars %ld\n", count);
 #endif
 }
 
@@ -237,6 +239,7 @@ void CrossMatch::printMatched(char *outfName, CMStar *tStar, float errorBox) {
 
   FILE *fp = fopen(outfName, "w");
 
+  long loopId = 0;
   long count = 0;
   while (NULL != tStar) {
     if (NULL != tStar->match && tStar->error < errorBox) {
@@ -244,11 +247,12 @@ void CrossMatch::printMatched(char *outfName, CMStar *tStar, float errorBox) {
       count++;
     }
     tStar = tStar->next;
+    loopId++;
   }
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
+  printf("loop %ld, matched stars %ld\n", loopId, count);
 #endif
 }
 
@@ -267,7 +271,7 @@ void CrossMatch::printMatchedPair(char *outfName, CMStar *tStar, float errorBox)
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
+  printf("matched stars %ld\n", count);
 #endif
 }
 
@@ -286,7 +290,7 @@ void CrossMatch::printNotMatched(char *outfName, CMStar *tStar) {
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("OT stars %d\n", count);
+  printf("OT stars %ld\n", count);
 #endif
 }
 
@@ -312,7 +316,7 @@ void CrossMatch::printMatchedDs9(char *outfName, CMStar *tStar, float errorBox) 
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
+  printf("matched stars %ld\n", count);
 #endif
 }
 
@@ -332,7 +336,7 @@ void CrossMatch::printNotMatchedDs9(char *outfName, CMStar *tStar) {
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("OT stars %d\n", count);
+  printf("OT stars %ld\n", count);
 #endif
 }
 
@@ -358,7 +362,7 @@ void CrossMatch::printAllStarList(char *outfName, StarFile *starFile, float erro
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("matched stars %d\n", count);
+  printf("matched stars %ld\n", count);
 #endif
 }
 
@@ -380,7 +384,7 @@ void CrossMatch::printOTStar(char *outfName, float errorBox) {
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("OT stars %d\n", count);
+  printf("OT stars %ld\n", count);
 #endif
 }
 

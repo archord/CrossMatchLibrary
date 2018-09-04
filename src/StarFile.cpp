@@ -96,6 +96,7 @@ void StarFile::readStar(char * fileName, int *idxs) {
   CMStar *tStar = NULL;
   CMStar *nextStar = NULL;
   char line[MaxStringLength];
+  char firstLine[MaxStringLength];
   float data1 = 0.0;
   float data2 = 0.0;
   float mag = 0.0;
@@ -105,11 +106,13 @@ void StarFile::readStar(char * fileName, int *idxs) {
       break;
     }
   }
+  
+  strcpy(firstLine, line);
 
   int pnum = 0;
   char *p;
   const char *delim = " ";
-  p = strtok(line, delim);
+  p = strtok(firstLine, delim);
   while (p!=NULL) {
     pnum++;
     p = strtok(NULL, delim);
@@ -166,7 +169,7 @@ void StarFile::readStar(char * fileName, int *idxs) {
   } while (fgets(line, MaxStringLength, fp) != NULL);
 
 #ifdef PRINT_CM_DETAIL
-  printf("%s read %d stars\n", fileName, starNum);
+  printf("%s read %ld stars\n", fileName, starNum);
 #endif
 }
 
@@ -184,6 +187,6 @@ void StarFile::writeStar(char * outFile) {
   fclose(fp);
 
 #ifdef PRINT_CM_DETAIL
-  printf("total write %d lines.\n", count);
+  printf("total write %ld lines.\n", count);
 #endif
 }

@@ -118,13 +118,13 @@ void StarFile::readStar(char * fileName, int *idxs) {
     p = strtok(NULL, delim);
   }
   
-  if(pnum<=3){
+  if(pnum<=5){
     idxs = NULL;
   }
 
   char farmatStr[255] = {0};
   if (idxs == NULL) {
-    sprintf(farmatStr, "%%f%%f%%f");
+    sprintf(farmatStr, "%%f%%f%%f%%*s");
   } else {
     for (int i = 1; i <= pnum; i++) {
       if (idxs[0] == i || idxs[1] == i || idxs[2] == i) {
